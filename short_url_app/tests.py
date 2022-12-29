@@ -7,29 +7,20 @@ from django.core.exceptions import ValidationError
 # todo: handle those that have the specific domain written in them
 class ShortenerTestCase(TestCase):
     def setUp(self):
-        pass
-        # Shortener.objects.create(long_url="https://docs.djangoproject.com")
-        # Shortener.objects.create(long_url="https://www.wolframalpha.com")
+        Shortener.objects.create(long_url="https://docs.djangoproject.com")
+        # Shortener.objects.create(long_url="https://stackoverflow.com")
 
-    # def test_short_url_length(self):
+    def test_short_url_length(self):
+        djangoproject = Shortener.objects.get(long_url="https://docs.djangoproject.com")
+        stackoverflow = Shortener.objects.get(long_url="https://www.stackoverflow.com")
+        self.assertEqual(len(djangoproject.short_url), 7)
+        # self.assertEqual(len(stackoverflow.short_url), 7)
+
+    # def test_short_url_randomness(self):
     #     djangoproject = Shortener.objects.get(long_url="https://docs.djangoproject.com")
-    #     wolframalpha = Shortener.objects.get(long_url="https://www.wolframalpha.com")
-    #     self.assertEqual(len(djangoproject.short_url), 7)
-    #     self.assertEqual(len(wolframalpha.short_url), 7)
+    #     stackoverflow = Shortener.objects.get(long_url="https://www.stackoverflow.com")
+    #     self.assertNotEqual(djangoproject.short_url, stackoverflow.short_url)
     #
-    # todo: def test_randon_str (contains only strings I want), test_randomness
-    # def test_get_or_create_transaction(self):
-    #     (new1, created1) = Shortener.objects.get_or_create(long_url="https://docs.coralavitan.com", short_url="ABCtzx")
-    #     if created1:
-    #         print("created")
-    #     print(new1)
-    #     (new2, created2) = Shortener.objects.get_or_create(long_url="https://docs.corala.com", short_url="ABCtzx")
-    #     if created2:
-    #         print("created")
-    #     print(new2)
-    # def test_invalid_short_url_chars_exception(self):
-    #     Shortener.objects.create(long_url="https://www.google.com/", short_url="14--")
-
     # def test_invalid_log_url_exception(self):
     #     try:
     #         Shortener.objects.create(long_url="wwwwwww")
@@ -37,31 +28,25 @@ class ShortenerTestCase(TestCase):
     #     except ValidationError:
     #         pass
     #
-    # def test_invalid_short_url_chars_exception(self):
+    # def test_invalid_short_url_characters_exception(self):
     #     try:
     #         Shortener.objects.create(long_url="https://www.google.com/", short_url="14--")
-    #         self.fail('Succeeded in creating an object when it received an invalid short url chars')
+    #         self.fail('Succeeded in creating an object when it received an invalid short url characters')
     #     except ValidationError:
     #         pass
     #
     # def test_invalid_short_url_length_exception(self):
     #     try:
-    #         Shortener.objects.create(long_url="https://www.googlee.com/", short_url="ABDcccccccc")
+    #         Shortener.objects.create(long_url="https://www.google.com/", short_url="ABDcccccccc")
     #         self.fail('Succeeded in creating an object when it received an invalid short url length')
     #     except ValidationError:
     #         pass
-
-    def test_invalid_short_url_unique(self):
-        first = Shortener.objects.create(long_url="https://docs.djangoproject123.com")
-        second = Shortener.objects.create(long_url="https://docs.djangoproject.com", short_url=first.short_url)
-        Shortener.objects.create(long_url="https://docs.djangoprojectrtr.com", short_url="14//55")
-    # try:
-    #     first = Shortener.objects.get(long_url="https://docs.djangoproject.com")
-    #     second = Shortener.objects.create(long_url="https://docs.djangoproject.com", short_url=first.short_url)
-    #     self.fail('Succeeded in creating an object when it received an invalid short url length')
-    # except ValidationError as e:
-    #     print(e.message)
-
+    #
+    # def test_invalid_short_url_unique(self):
+    #     djangoproject = Shortener.objects.get(long_url="https://docs.djangoproject.com")
+    #     stackoverflow = Shortener.objects.get(long_url="https://www.stackoverflow.com",
+    #                                           short_url=djangoproject.short_url)
+    #     self.assertNotEqual(djangoproject.short_url, stackoverflow.short_url)
     #
     # def test_short_url_redirection(self):
     #     wolframalpha = Shortener.objects.get(long_url="https://www.wolframalpha.com")
@@ -80,10 +65,3 @@ class ShortenerTestCase(TestCase):
     #     self.client.get(s)
     #     wolframalpha = Shortener.objects.get(long_url="https://www.wolframalpha.com")
     #     self.assertEqual(wolframalpha.times_followed, times_followed+1)
-
-    # def test_invalid_short_url(self):
-    #     a = Shortener.objects.create(long_url="https://stackoverflowwwww.com", short_url="ABCdefg")
-    #     print("HERE")
-    #     b =  Shortener.objects.create(long_url="https://stackoverflow.com", short_url="ABCdefg")
-    #     stackoverflow = Shortener.objects.get(long_url="https://stackoverflow.com")
-    #     self.assertNotEqual(a.short_url, b.short_url)

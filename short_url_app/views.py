@@ -31,7 +31,6 @@ def create_short_url(request):
 
 def redirect_url_view(request, shortened_part):
     try:
-        # todo: What will happen when a save is made and at the same second two users enter a shortened url?
         shortener = Shortener.objects.get(short_url=shortened_part)
         # to avoid a race condition we'll use the F expression
         shortener.times_followed = F('times_followed') + 1
