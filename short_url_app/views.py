@@ -33,8 +33,7 @@ def redirect_url_view(request, shortened_part):
     try:
         shortener = Shortener.objects.get(short_url=shortened_part)
         # to avoid a race condition we'll use the F expression
-        shortener.times_followed = F('times_followed') + 1
-        shortener.save()
+        Shortener.objects.filter(short_url=shortened_part).update(times_followed=F('times_followed')+1)
         return HttpResponseRedirect(shortener.long_url)
     except ObjectDoesNotExist:
         raise Http404('Sorry this link does not exist :(')
