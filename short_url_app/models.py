@@ -29,6 +29,18 @@ def validate_long_url(long_url: str) -> None:
         raise ValidationError(f"The long url {long_url} is invalid. Please try again with a proper url.")
 
 
+def create_random_code(chars=AVAILABLE_CHARS) -> str:
+    """
+    Creates a random string with the predetermined size.
+    """
+    # we have 7 places where there can be up to 62 available characters for each place.
+    # Therefore, the possible permutations are 2,478,652,606,080.
+    # todo: define the letters here?
+    return "".join(
+        [choice(chars) for _ in range(MAXIMUM_URL_CHARS)]
+        )
+
+
 class Shortener(models.Model):
     """
     Creates a shortened URL path according to the given URL.
@@ -48,7 +60,8 @@ class Shortener(models.Model):
     long_url = models.URLField(validators=[validate_long_url])
 
     # unique - build an index AND enforce unique constraint.
-    short_url = models.CharField(max_length=15, unique=True, blank=True, validators=[validate_short_url])
+    short_url = models.CharField(max_length=15, unique=True, blank=True, validators=[validate_short_url],
+                                 default=create_random_code)
 
     def __str__(self):
         return f'created={self.created} || times_followed={self.times_followed} || long_url={self.long_url} ' \
@@ -66,20 +79,10 @@ class Shortener(models.Model):
                     self.short_url = self.__create_random_code()
                 self.full_clean()
                 super().save(*args, **kwargs)
+                break
             except ValidationError as e:
                 if e.messages == ['Shortener with this Short url already exists.']:
                     print("This short url already exists. Trying to save the object again with a different short url.")
                     self.short_url = self.__create_random_code()
                 else:
-                    raise e
-
-    @staticmethod
-    def __create_random_code() -> str:
-        """
-        Creates a random string with the predetermined size.
-        """
-        # we have 7 places where there can be up to 62 available characters for each place.
-        # Therefore, the possible permutations are 2,478,652,606,080.
-        return "".join(
-            [choice(AVAILABLE_CHARS) for _ in range(MAXIMUM_URL_CHARS)]
-        )
+                    raise
