@@ -5,6 +5,8 @@
 __pycache__
 db.sqlite3
 media
+.idea
+.pytest_cache
 
 # Backup files #
 *.bak
@@ -18,7 +20,7 @@ media
 .idea/**/shelf
 
 # AWS User-specific
-.idea/**/aws.xml
+a.ide/**/aws.xml
 
 # Generated files
 .idea/**/contentModel.xml
