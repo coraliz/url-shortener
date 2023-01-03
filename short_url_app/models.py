@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from random import choice
 from string import ascii_letters, digits
 
-MAXIMUM_URL_CHARS = 7
+URL_LENGTH = 7
 AVAILABLE_CHARS = ascii_letters + digits
 
 
@@ -14,11 +14,11 @@ def validate_short_url(short_url: str) -> None:
     """
     if not short_url.isalnum():
         raise ValidationError(f"The short url '{short_url}' is not valid. It must consist of only letters and numbers")
-    if len(short_url) != MAXIMUM_URL_CHARS:
+    if len(short_url) != URL_LENGTH:
         raise ValidationError(f"the short url '{short_url}' is not valid.Its length must be seven.")
 
 
-def validate_long_url(long_url: str) -> None:
+def validate_url(long_url: str) -> None:
     """
     Makes sure the long url is valid by relying on Django's URLValidator function.
     """
@@ -37,8 +37,8 @@ def create_random_code(chars=AVAILABLE_CHARS) -> str:
     # Therefore, the possible permutations are 2,478,652,606,080.
     # todo: define the letters here?
     return "".join(
-        [choice(chars) for _ in range(MAXIMUM_URL_CHARS)]
-        )
+        [choice(chars) for _ in range(URL_LENGTH)]
+    )
 
 
 class Shortener(models.Model):
@@ -49,7 +49,7 @@ class Shortener(models.Model):
 
     times_followed -> The number of visits the shortened link has received.
 
-    long_url -> The original link
+    url -> The original link
 
     short_url ->  shortened link https://domain/(short_url)
     """
@@ -57,15 +57,11 @@ class Shortener(models.Model):
 
     times_followed = models.PositiveIntegerField(default=0)
 
-    long_url = models.URLField(validators=[validate_long_url])
+    url = models.URLField(validators=[validate_url])
 
     # unique - build an index AND enforce unique constraint.
-    short_url = models.CharField(max_length=15, unique=True, blank=True, validators=[validate_short_url],
+    short_url = models.CharField(max_length=URL_LENGTH, unique=True, blank=True, validators=[validate_short_url],
                                  default=create_random_code)
-
-    def __str__(self):
-        return f'created={self.created} || times_followed={self.times_followed} || long_url={self.long_url} ' \
-               f'|| short_url={self.short_url}'
 
     def save(self, *args, **kwargs):
         """
@@ -76,13 +72,14 @@ class Shortener(models.Model):
         for i in range(0, tries):
             try:
                 if not self.short_url:
-                    self.short_url = self.__create_random_code()
+                    self.short_url = create_random_code()
                 self.full_clean()
                 super().save(*args, **kwargs)
                 break
             except ValidationError as e:
-                if e.messages == ['Shortener with this Short url already exists.']:
-                    print("This short url already exists. Trying to save the object again with a different short url.")
-                    self.short_url = self.__create_random_code()
-                else:
+                if (short_url_error := e.error_dict.get('short_url')) is None or short_url_error[0].code != 'unique':
                     raise
+                else:
+                    print("This short url already exists. Trying to save the object again with a different short "
+                          "url.")
+                    self.short_url = create_random_code()

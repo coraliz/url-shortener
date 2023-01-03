@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 (
                     "long_url",
                     models.URLField(
-                        validators=[short_url_app.models.validate_long_url]
+                        validators=[short_url_app.models.validate_url]
                     ),
                 ),
                 (
