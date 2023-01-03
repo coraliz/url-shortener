@@ -33,9 +33,6 @@ def create_random_code(chars=AVAILABLE_CHARS) -> str:
     """
     Creates a random string with the predetermined size.
     """
-    # we have 7 places where there can be up to 62 available characters for each place.
-    # Therefore, the possible permutations are 2,478,652,606,080.
-    # todo: define the letters here?
     return "".join(
         [choice(chars) for _ in range(URL_LENGTH)]
     )
@@ -71,8 +68,6 @@ class Shortener(models.Model):
         tries = 3
         for i in range(0, tries):
             try:
-                if not self.short_url:
-                    self.short_url = create_random_code()
                 self.full_clean()
                 super().save(*args, **kwargs)
                 break
@@ -80,6 +75,5 @@ class Shortener(models.Model):
                 if (short_url_error := e.error_dict.get('short_url')) is None or short_url_error[0].code != 'unique':
                     raise
                 else:
-                    print("This short url already exists. Trying to save the object again with a different short "
-                          "url.")
+                    print("Trying to save the object again with a different short url.")
                     self.short_url = create_random_code()

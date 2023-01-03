@@ -42,7 +42,6 @@ class ShortenerTestCase(TestCase):
         self.assertNotEqual(self.djangoproject.short_url, google.short_url)
 
     def test_short_url_redirection(self):
-        # todo: what should I do about the domain ? NO. explain it.
         s = 'http://127.0.0.1:8000/s/' + self.djangoproject.short_url
         response = self.client.get(s)
         self.assertRedirects(response, self.djangoproject.url, fetch_redirect_response=False)
