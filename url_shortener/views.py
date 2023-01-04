@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from django.shortcuts import redirect
 from django.db.models import F
 from django.http import Http404
-from short_url_app.models import Shortener
-from short_url_app.serializers import ShortenerSerializer
+from url_shortener.models import Shortener
+from url_shortener.serializers import ShortenerSerializer
 
 
 class ShortenerDetail(APIView):

@@ -1,9 +1,9 @@
 from django.test import TestCase
-from short_url_app.models import Shortener
+from url_shortener.models import Shortener
 from django.core.exceptions import ValidationError
 
 
-class ShortenerTestCase(TestCase):
+class UrlShortenerTestCase(TestCase):
     def setUp(self):
         self.djangoproject = Shortener.objects.create(url="https://docs.djangoproject.com")
         self.stackoverflow = Shortener.objects.create(url="https://stackoverflow.com")

@@ -28,7 +28,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "short_url_app.apps.ShortUrlConfig",
+    #"short_url_app.apps.ShortUrlConfig",
+    "url_shortener",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -47,7 +48,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "short_url_project.urls"
+ROOT_URLCONF = "example_project.urls"
 
 TEMPLATES = [
     {
@@ -65,7 +66,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "short_url_project.wsgi.application"
+WSGI_APPLICATION = "example_project.wsgi.application"
 
 
 # Database

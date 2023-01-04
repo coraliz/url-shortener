@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from short_url_app.models import Shortener
+from url_shortener.models import Shortener
 
 
 class ShortenerSerializer(serializers.ModelSerializer):
