@@ -2,7 +2,7 @@
 This repository contains a Django URL shortener application which is designed as a REST API to create short URL, redirect it to long URL and keep track of the number of redirects for each URL. 
 For example, A short URL `"https://short.url/jdj23d"` can redirect to the long URL `"https://ravkavonline.co.il/he/faq#ravkav-online"`.
 
-### Getting Started
+## Getting Started
 1. Clone this repo.
 2. Make sure you installed the relevant [requirements](requirements.txt) inside your working environment. 
 3. From the command line, cd into a directory where you stored the project code, then run the following command `"python manage.py migrate"` to create the models.
@@ -50,3 +50,9 @@ In this repository you can see the [example_project](example_project) as an exam
 
 Url shortener application includes [unit test](url_shortener/tests.py), for example, tests for creating and redirecting a short URL and
 a test for non-existing short URL. you can run them by this command `"python manage.py test url-shortener.tests"`.
+
+### Implementation References
+- The program is implemented with:
+  - Python 3.10.5
+  - Django 4.1.4
+  - Django REST framework 3.14.0
