@@ -57,4 +57,3 @@ a test for non-existing short URL. You can run them by this command `python mana
 - Django REST framework 3.14.0
 - Django 4.1.4
   - SQLite
-
