@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ShortUrlConfig(AppConfig):
+class UrlShortenerConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "short_url_app"
+    name = "url_shortener"
