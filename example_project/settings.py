@@ -28,7 +28,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    #"short_url_app.apps.ShortUrlConfig",
     "url_shortener",
     "django.contrib.admin",
     "django.contrib.auth",
