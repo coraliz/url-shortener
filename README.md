@@ -49,7 +49,7 @@ For example, A short URL `https://short.url/jdj23d` can redirect to the long URL
 In this repository you can see [example_project](example_project) as a demonstration of how to include this application inside your project. 
 
 Url shortener application includes [unit tests](url_shortener/tests.py). For example, tests for creating and redirecting a short URL and
-a test for non-existing short URL. You can run them by this command `python manage.py test url-shortener.tests`.
+a test for non-existing short URL. You can run them by this command `python manage.py test url_shortener.tests`.
 
 ### Implementation References
 - The program is implemented with:
