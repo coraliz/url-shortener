@@ -15,7 +15,7 @@ def validate_short_url(short_url: str) -> None:
     if not short_url.isalnum():
         raise ValidationError(f"The short url '{short_url}' is not valid. It must consist of only letters and numbers")
     if len(short_url) != URL_LENGTH:
-        raise ValidationError(f"the short url '{short_url}' is not valid.Its length must be seven.")
+        raise ValidationError(f"the short url '{short_url}' is not valid.Its length  must be {URL_LENGTH}.")
 
 
 def validate_url(long_url: str) -> None:
@@ -29,12 +29,12 @@ def validate_url(long_url: str) -> None:
         raise ValidationError(f"The long url {long_url} is invalid. Please try again with a proper url.")
 
 
-def create_random_code(chars=AVAILABLE_CHARS) -> str:
+def create_random_code(chars: str = AVAILABLE_CHARS, running_range: int = URL_LENGTH) -> str:
     """
     Creates a random string with the predetermined size.
     """
     return "".join(
-        [choice(chars) for _ in range(URL_LENGTH)]
+        [choice(chars) for _ in range(running_range)]
     )
 
 
@@ -56,7 +56,7 @@ class Shortener(models.Model):
 
     url = models.URLField(validators=[validate_url])
 
-    # unique - build an index AND enforce unique constraint.
+    # unique - build an index and enforce unique constraint.
     short_url = models.CharField(max_length=URL_LENGTH, unique=True, blank=True, validators=[validate_short_url],
                                  default=create_random_code)
 
@@ -72,8 +72,8 @@ class Shortener(models.Model):
                 super().save(*args, **kwargs)
                 break
             except ValidationError as e:
+                # handles a situation when the short url is already associated with another url
                 if (short_url_error := e.error_dict.get('short_url')) is None or short_url_error[0].code != 'unique':
                     raise
                 else:
-                    print("Trying to save the object again with a different short url.")
                     self.short_url = create_random_code()

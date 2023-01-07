@@ -1,5 +1,5 @@
 from django.test import TestCase
-from url_shortener.models import Shortener
+from url_shortener.models import Shortener, URL_LENGTH
 from django.core.exceptions import ValidationError
 
 
@@ -9,8 +9,8 @@ class UrlShortenerTestCase(TestCase):
         self.stackoverflow = Shortener.objects.create(url="https://stackoverflow.com")
 
     def test_short_url_length(self):
-        self.assertEqual(len(self.djangoproject.short_url), 7)
-        self.assertEqual(len(self.stackoverflow.short_url), 7)
+        self.assertEqual(len(self.djangoproject.short_url), URL_LENGTH)
+        self.assertEqual(len(self.stackoverflow.short_url), URL_LENGTH)
 
     def test_short_url_randomness(self):
         self.assertNotEqual(self.djangoproject.short_url, self.stackoverflow.short_url)

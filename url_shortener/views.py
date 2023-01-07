@@ -21,14 +21,14 @@ class ShortenerDetail(APIView):
         try:
             return Shortener.objects.get(short_url=short_url)
         except Shortener.DoesNotExist:
-            raise Http404
+            raise Http404(f"Sorry, the short url '{short_url}' doesn't exist.")
 
     def get(self, request, short_url):
         """
         Redirects to the relevant url according to the short url.
         """
         shortener = self.get_object(short_url)
-        # avoid a race condition when update a shortener object by using the F expression
+        # avoid a race condition when updating a shortener object by using the F expression
         Shortener.objects.filter(short_url=short_url).update(times_followed=F('times_followed') + 1)
         return redirect(shortener.url)
 
@@ -39,9 +39,10 @@ class ShortenerDetail(APIView):
         """
         data = JSONParser().parse(request)
         serializer = ShortenerSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            short_url = serializer.data["short_url"]
-            short_url_path = f"/s/{short_url}"
-            return Response(request.build_absolute_uri(short_url_path), status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        short_url = serializer.data["short_url"]
+        short_url_path = f"/s/{short_url}"
+        return Response(request.build_absolute_uri(short_url_path), status=status.HTTP_201_CREATED)
+
