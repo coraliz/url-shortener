@@ -6,7 +6,7 @@ For example, A short URL `https://short.url/jdj23d` can redirect to the long URL
 1. Clone this repo.
 2. Make sure you have installed the relevant [requirements](requirements.txt) inside your working environment. 
 3. From the command line, cd into a directory where you have stored the project code, then run the following command `python manage.py migrate` to create the models. <a id="step4"> </a> 
-4. Run the development server by inputting this command `python manage.py migrate`.
+4. Run the development server by inputting this command `python manage.py runserver`.
    You’ll see the following output on the command line:
 
    ```
