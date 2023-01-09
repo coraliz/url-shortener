@@ -1,11 +1,12 @@
 from django.core.validators import URLValidator
-from django.db import models
+from django.db import models, transaction, IntegrityError
 from django.core.exceptions import ValidationError
 from random import choice
 from string import ascii_letters, digits
 
 URL_LENGTH = 7
 AVAILABLE_CHARS = ascii_letters + digits
+UNIQUE_SHORT_URL_INTEGRITY_ERROR = "UNIQUE constraint failed: url_shortener_shortener.short_url"
 
 
 def validate_short_url(short_url: str) -> None:
@@ -65,15 +66,19 @@ class Shortener(models.Model):
         Saves the object in the DB. If the generated short url is already exists, this function will regenerate it
         and try to save this object for a limited number of attempts.
         """
-        tries = 3
-        for i in range(0, tries):
+        max_tries = 5
+        for i in range(0, max_tries):
             try:
-                self.full_clean()
+                # self.full_clean()
+                # with transaction.atomic():
                 super().save(*args, **kwargs)
                 break
-            except ValidationError as e:
-                # handles a situation when the short url is already associated with another url
-                if (short_url_error := e.error_dict.get('short_url')) is None or short_url_error[0].code != 'unique':
+            except ValidationError as ve:
+                if (short_url_error := ve.error_dict.get('short_url')) is None or short_url_error[0].code != 'unique':
                     raise
-                else:
-                    self.short_url = create_random_code()
+                self.short_url = create_random_code()
+            except IntegrityError as ie:
+                if ie.args[0] != UNIQUE_SHORT_URL_INTEGRITY_ERROR:
+                    raise
+                self.short_url = create_random_code()
+
