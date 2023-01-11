@@ -1,9 +1,9 @@
-from django.test import TestCase
+from django.test import TransactionTestCase
 from url_shortener.models import Shortener, URL_LENGTH
 from django.core.exceptions import ValidationError
 
 
-class UrlShortenerTestCase(TestCase):
+class UrlShortenerTestCase(TransactionTestCase):
     def setUp(self):
         self.djangoproject = Shortener.objects.create(url="https://docs.djangoproject.com")
         self.stackoverflow = Shortener.objects.create(url="https://stackoverflow.com")
@@ -44,7 +44,7 @@ class UrlShortenerTestCase(TestCase):
     def test_short_url_redirection(self):
         s = 'http://127.0.0.1:8000/s/' + self.djangoproject.short_url
         response = self.client.get(s)
-        self.assertRedirects(response, self.djangoproject.url, fetch_redirect_response=False)
+        self.assertRedirects(response, self.djangoproject.url, status_code=302, fetch_redirect_response=False)
 
     def test_short_url_failure_redirection(self):
         response = self.client.get('http://127.0.0.1:8000/s/1122')
@@ -56,3 +56,6 @@ class UrlShortenerTestCase(TestCase):
         self.client.get(s)
         self.djangoproject.refresh_from_db()
         self.assertEqual(self.djangoproject.times_followed, times_followed + 1)
+        self.client.get(s)
+        self.djangoproject.refresh_from_db()
+        self.assertEqual(self.djangoproject.times_followed, times_followed + 2)

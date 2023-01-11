@@ -30,7 +30,7 @@ class ShortenerDetail(APIView):
         shortener = self.get_object(short_url)
         # avoid a race condition when updating a shortener object by using the F expression
         Shortener.objects.filter(short_url=short_url).update(times_followed=F('times_followed') + 1)
-        return redirect(shortener.url)
+        return redirect(to=shortener.url)
 
     @staticmethod
     def post(request):
@@ -45,4 +45,3 @@ class ShortenerDetail(APIView):
         short_url = serializer.data["short_url"]
         short_url_path = f"/s/{short_url}"
         return Response(request.build_absolute_uri(short_url_path), status=status.HTTP_201_CREATED)
-
