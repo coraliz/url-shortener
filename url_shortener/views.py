@@ -45,4 +45,3 @@ class ShortenerDetail(APIView):
         short_url = serializer.data["short_url"]
         short_url_path = f"/s/{short_url}"
         return Response(request.build_absolute_uri(short_url_path), status=status.HTTP_201_CREATED)
-
