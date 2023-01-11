@@ -1,5 +1,5 @@
 from django.core.validators import URLValidator
-from django.db import models, transaction, IntegrityError
+from django.db import models, IntegrityError
 from django.core.exceptions import ValidationError
 from random import choice
 from string import ascii_letters, digits

@@ -1,4 +1,4 @@
-from django.test import TestCase, TransactionTestCase
+from django.test import TransactionTestCase
 from url_shortener.models import Shortener, URL_LENGTH
 from django.core.exceptions import ValidationError
 
