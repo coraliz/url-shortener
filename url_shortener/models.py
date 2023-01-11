@@ -69,16 +69,16 @@ class Shortener(models.Model):
         max_tries = 5
         for i in range(0, max_tries):
             try:
-                # self.full_clean()
-                # with transaction.atomic():
+                self.full_clean()
                 super().save(*args, **kwargs)
                 break
             except ValidationError as ve:
+                # handles a situation when the short url is already associated with another url
                 if (short_url_error := ve.error_dict.get('short_url')) is None or short_url_error[0].code != 'unique':
                     raise
                 self.short_url = create_random_code()
             except IntegrityError as ie:
+                # handles a TOCTOU problem
                 if ie.args[0] != UNIQUE_SHORT_URL_INTEGRITY_ERROR:
                     raise
                 self.short_url = create_random_code()
-
