@@ -40,15 +40,11 @@ class ShortenerDetail(APIView):
         Creates a new shortener object in the db.
         """
         data = JSONParser().parse(request)
-        s = Shortener.objects.create(url=data["url"], short_url=data["short_url"])
-        short_url_path = f"/s/{s.short_url}"
-        return HttpResponse(request.build_absolute_uri(short_url_path), status=status.HTTP_201_CREATED)
-        # data = JSONParser().parse(request)
-        # serializer = ShortenerSerializer(data=data)
-        # if not serializer.is_valid():
-        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # serializer.save()
-        # short_url = serializer.data["short_url"]
-        # short_url_path = f"/s/{short_url}"
-        # return Response(request.build_absolute_uri(short_url_path), status=status.HTTP_201_CREATED)
+        serializer = ShortenerSerializer(data=data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        short_url = serializer.data["short_url"]
+        short_url_path = f"/s/{short_url}"
+        return Response(request.build_absolute_uri(short_url_path), status=status.HTTP_201_CREATED)
 
